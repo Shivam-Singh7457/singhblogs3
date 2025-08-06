@@ -55,7 +55,7 @@ export default function CreatePost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${import.meta.url.VITE_API_URL}/api/post/create`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/post/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
