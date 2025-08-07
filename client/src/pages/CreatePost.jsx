@@ -54,8 +54,17 @@ export default function CreatePost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form data being sent:', formData); // Debug log
+    console.log('API URL:', import.meta.env.VITE_API_URL); // Debug log
+    
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/post/create`, {
+      setPublishError(null);
+      
+      // Clean API URL construction
+      const apiUrl = `${import.meta.env.VITE_API_URL}/api/post/create`;
+      console.log('Final API URL:', apiUrl); // Debug log
+      
+      const res = await fetch(apiUrl, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -63,9 +72,12 @@ export default function CreatePost() {
         },
         body: JSON.stringify(formData),
       });
+      
       const data = await res.json();
+      console.log('Response:', data); // Debug log
+      
       if (!res.ok) {
-        setPublishError(data.message);
+        setPublishError(data.message || 'Failed to create post');
         return;
       }
 
@@ -74,7 +86,8 @@ export default function CreatePost() {
         navigate(`/post/${data.slug}`);
       }
     } catch (error) {
-      setPublishError('Something went wrong');
+      console.error('Submit error:', error);
+      setPublishError('Something went wrong: ' + error.message);
     }
   };
 
