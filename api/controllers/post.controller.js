@@ -1,7 +1,7 @@
 import Post from '../models/post.model.js';
 import { errorHandler } from '../utils/error.js';
 
-// ✅ Anyone can create a post (no auth)
+// ✅ Public: Create post
 export const create = async (req, res, next) => {
   if (!req.body.title || !req.body.content) {
     return next(errorHandler(400, 'Please provide all required fields'));
@@ -16,7 +16,7 @@ export const create = async (req, res, next) => {
   const newPost = new Post({
     ...req.body,
     slug,
-    userId: null, // Not linked to any user
+    userId: null, // No user association
   });
 
   try {
@@ -27,7 +27,7 @@ export const create = async (req, res, next) => {
   }
 };
 
-// 🔍 Get posts with filtering and pagination
+// ✅ Public: Get posts (with filters)
 export const getposts = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
@@ -73,12 +73,8 @@ export const getposts = async (req, res, next) => {
   }
 };
 
-// ❌ Still protected: Only allow admin & owner to delete
+// ✅ Public: Delete post (no user check)
 export const deletepost = async (req, res, next) => {
-  if (!req.user?.isAdmin || req.user.id !== req.params.userId) {
-    return next(errorHandler(403, 'You are not allowed to delete this post'));
-  }
-
   try {
     await Post.findByIdAndDelete(req.params.postId);
     res.status(200).json('The post has been deleted');
@@ -87,12 +83,8 @@ export const deletepost = async (req, res, next) => {
   }
 };
 
-// ❌ Still protected: Only allow admin & owner to update
+// ✅ Public: Update post (no user check)
 export const updatepost = async (req, res, next) => {
-  if (!req.user?.isAdmin || req.user.id !== req.params.userId) {
-    return next(errorHandler(403, 'You are not allowed to update this post'));
-  }
-
   try {
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.postId,
