@@ -67,7 +67,6 @@ export default function CreatePost() {
       const res = await fetch(apiUrl, {
         method: 'POST',
         credentials: 'include',
-        'Authorization': `Bearer ${token}`,
         headers: {
           'Content-Type': 'application/json',
         },
